@@ -1,6 +1,6 @@
 # CLI Log Analyzer for Linux services
 
-##at the end of the project the program should:
+## at the end of the project the program should:
     -Opens a log file
     -Reads it line by line
     -Parses each line
@@ -10,14 +10,14 @@
     -Optionally writes filtered output to another file
     -Exits cleanly with proper error codes
 
-##Required CLI arguments
+## Required CLI arguments
     --file <path> (mandatory)
     --level <INFO|WARN|ERROR> (optional)
     --from <timestamp> (optional)
     --to <timestamp> (optional)
     --out <path> (optional)
 
-###Output behavior
+### Output behavior
 Always print:
     -Total lines processed
     -Lines matched
@@ -26,3 +26,9 @@ Always print:
     -Execution time
 If --out is provided:
     -Write only matched lines to the file
+
+    
+    
+    
+last update i can open files reads them and Filters them what i want with --level
+next step i need to handle --file files exestence. rejects unknown flags
