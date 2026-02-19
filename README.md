@@ -31,4 +31,4 @@ If --out is provided:
     
     
 last update i can open files reads them and Filters them what i want with --level
-next step i need to handle --file files exestence. rejects unknown flags
+handle --file files exestence. rejects unknown flags
