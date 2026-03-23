@@ -1,12 +1,14 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <sys/stat.h>
 
-void openLog ();
+bool openLog ();
 void printUsage ();
 
 std::string filePath = "";
 std::string level = "";
+std::string outPath = "";
 
 int main(int argc, char* argv[]) {
 	int pathCount = 0;
@@ -39,6 +41,13 @@ int main(int argc, char* argv[]) {
 				std::cerr << "Error: Invalid level." << std::endl;
 				return 1;
 			}
+		} else if (arg == "--out") {
+			if (i + 1 < argc) {
+				outPath = argv[++i];
+			} else {
+				std::cerr << "Error: --out requires a value" << std::endl;
+				return 1;
+			}
 		} else if (arg == "--help") {
 			printUsage();
 			return 0;
@@ -56,33 +65,67 @@ int main(int argc, char* argv[]) {
 	std::cout << "File: " << filePath << std::endl;
 	std::cout << "Level: " << level << std::endl;
 
-	openLog();
-
-	std::cout << "Arguments parsed successfully" << std::endl;
+	if (!openLog()) return 1;
 
 	return 0;
 }
 
-void openLog () {
+bool openLog () {
+	int totalLines = 0; // increments every line, no matter what
+	int matchedLines = 0; // increments only when a line passes the filter
+	struct stat fileStat;
+
+	//stat(filePath.c_str(), &fileStat);
+	if (stat(filePath.c_str(), &fileStat)) {
+		std::cerr << "Error: file does not exist" << std::endl;
+		return false;
+	}
+
+	if (!(S_ISREG(fileStat.st_mode))) {
+		std::cerr << "Error: path is not a regular file" << std::endl;
+		return false;
+	}
+
 	std::ifstream logFile(filePath);
+	std::ofstream outFile;
 
 	if (!logFile.is_open()) {
 		std::cerr << "Could not open the log file: " << filePath << std::endl;
-		return;
+		return false;
 	} else {
 		std::cout << "File opened successfully!" << std::endl;
+	}
+
+	if (!outPath.empty()) {
+		outFile.open(outPath);
+		if (!outFile.is_open()) {
+			std::cerr << "Could not open the out file: " << outPath << std::endl;
+			return false;
+		} else {
+			std::cout << "File opened successfully!" << std::endl;
+		}
 	}
 
 	std::string line;
 	while (std::getline(logFile, line)) {
 		// If level is empty, it will match every line.
 		// If not empty, it filters by the provided string.
+		totalLines++;
 		if (level.empty() || line.find(level) != std::string::npos) {
 			std::cout << line << std::endl;
+			if (!outPath.empty()) {
+				outFile << line << std::endl;
+			}
+			matchedLines++;
 		}
 	}
 
+	std::cout << "Total lines: " << totalLines << std::endl;
+	std::cout << "Matched lines: " << matchedLines << std::endl;
 	logFile.close();
+	outFile.close();
+
+	return true;
 }
 
 void printUsage() {
