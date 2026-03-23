@@ -1,3 +1,4 @@
 src/loganalyze
+src/result.txt
 *.o
 *.out
