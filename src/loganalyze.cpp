@@ -9,6 +9,8 @@ void printUsage ();
 std::string filePath = "";
 std::string level = "";
 std::string outPath = "";
+std::string fromTime = "";
+std::string toTime = "";
 
 int main(int argc, char* argv[]) {
 	int pathCount = 0;
@@ -37,7 +39,7 @@ int main(int argc, char* argv[]) {
 				std::cerr << "Error: --level requires a value" << std::endl;
 				return 1;
 			}
-			if (!(level == "INFO" || level == "WARN" || level == "ERROR")) {
+			if (!(level == "INFO" || level == "WARN" || level == "ERROR" || level == "DEBUG")) {
 				std::cerr << "Error: Invalid level." << std::endl;
 				return 1;
 			}
@@ -48,11 +50,32 @@ int main(int argc, char* argv[]) {
 				std::cerr << "Error: --out requires a value" << std::endl;
 				return 1;
 			}
+		} else if (arg == "--from") {
+			if (i + 1 < argc) {
+				fromTime = argv[++i];
+			} else {
+				std::cerr << "Error: --from requires a value" << std::endl;
+				return 1;
+			}
+		} else if (arg == "--to") {
+			if (i + 1 < argc) {
+				toTime = argv[++i];
+			} else {
+				std::cerr << "Error: --to requires a value" << std::endl;
+				return 1;
+			}
 		} else if (arg == "--help") {
 			printUsage();
 			return 0;
 		} else {
 			std::cerr << "Unknown argument: " << arg << std::endl;
+			return 1;
+		}
+	}
+
+	if (!(fromTime.empty()) && !(toTime.empty())) {
+		if (fromTime > toTime) {
+			std::cerr << "Invalid time range: --from must be earlier than --to" << std::endl;
 			return 1;
 		}
 	}
@@ -75,7 +98,6 @@ bool openLog () {
 	int matchedLines = 0; // increments only when a line passes the filter
 	struct stat fileStat;
 
-	//stat(filePath.c_str(), &fileStat);
 	if (stat(filePath.c_str(), &fileStat)) {
 		std::cerr << "Error: file does not exist" << std::endl;
 		return false;
@@ -106,11 +128,24 @@ bool openLog () {
 		}
 	}
 
+	int first, second;
+	std::string extractedTime = "";
+
 	std::string line;
 	while (std::getline(logFile, line)) {
+
+		first = line.find('[');
+		second = line.find(']');
+
+		extractedTime = line.substr(first + 1, second - first - 1);
+
+		totalLines++; // lines counter
+
+		if (!(fromTime.empty()) && extractedTime < fromTime) {continue;}
+		if (!(toTime.empty()) && extractedTime > toTime) {continue;}
+
 		// If level is empty, it will match every line.
 		// If not empty, it filters by the provided string.
-		totalLines++;
 		if (level.empty() || line.find(level) != std::string::npos) {
 			std::cout << line << std::endl;
 			if (!outPath.empty()) {
@@ -130,7 +165,7 @@ bool openLog () {
 
 void printUsage() {
 	std::cout << "Usage: \n"
-			  << "	loganalyze --file <path> [--level INFO|WARN|ERROR] [--from ""YYYY-MM-DD HH:MM:SS""] [--to ""YYYY-MM-DD HH:MM:SS""] [--out <path>] \n"
+			  << "	loganalyze --file <path> [--level INFO|WARN|ERROR|DEBUG] [--from ""YYYY-MM-DD HH:MM:SS""] [--to ""YYYY-MM-DD HH:MM:SS""] [--out <path>] \n"
 			  << " \n"
 			  << "Options: \n"
 			  << "  --file     Path to log file (required) \n"
