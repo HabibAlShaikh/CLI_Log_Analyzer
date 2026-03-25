@@ -46,8 +46,9 @@ Output:
 ...
 Total lines: 100
 Matched lines: 34
+```  
 Output file: you will get file named resalt.txt
-```
+
 
 Input: ```./loganalyze --path /var/log/archinstall/install.log --from "2026-02-07 07:46:00" --to "2026-02-07 07:49:09"```  
 Output:
