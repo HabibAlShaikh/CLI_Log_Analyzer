@@ -141,8 +141,8 @@ bool openLog () {
 
 		totalLines++; // lines counter
 
-		if (!(fromTime.empty()) && extractedTime < fromTime) {continue;}
-		if (!(toTime.empty()) && extractedTime > toTime) {continue;}
+		if (!(fromTime.empty()) && extractedTime <= fromTime) {continue;}
+		if (!(toTime.empty()) && extractedTime >= toTime) {continue;}
 
 		// If level is empty, it will match every line.
 		// If not empty, it filters by the provided string.
