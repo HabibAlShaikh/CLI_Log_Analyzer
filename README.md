@@ -1,10 +1,25 @@
 # CLI Log Analyzer for Linux services
 A CLI tool that parses and filters Linux log files.
 
+## Requirements
+- Linux
+- g++ (GCC C++ compiler)
+
+To install g++ on Debian/Ubuntu:
+```bash
+sudo apt install g++
+```
+On Arch Linux:
+```bash
+sudo pacman -S gcc
+```
+
 ## Build
+Clone the repo and compile:
 ```bash
 g++ src/loganalyze.cpp -o loganalyze
 ```
+This produces a `loganalyze` binary in the current directory.
 
 ## Usage
 Usage:
