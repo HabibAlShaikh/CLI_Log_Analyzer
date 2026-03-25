@@ -13,7 +13,7 @@ loganalyze --file <path> [--level INFO|WARN|ERROR|DEBUG] [--from ""YYYY-MM-DD HH
 ```
 
 ## options
-```--file```     Path to log file (required)  
+```--path```     Path to log file (required)  
 ```--level```    Filter by log level  
 ```--out```      Output file for matched lines  
 ```--from```     Start timestamp (inclusive)  

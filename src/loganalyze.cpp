@@ -168,7 +168,7 @@ void printUsage() {
 			  << "	loganalyze --file <path> [--level INFO|WARN|ERROR|DEBUG] [--from ""YYYY-MM-DD HH:MM:SS""] [--to ""YYYY-MM-DD HH:MM:SS""] [--out <path>] \n"
 			  << " \n"
 			  << "Options: \n"
-			  << "  --file     Path to log file (required) \n"
+			  << "  --path     Path to log file (required) \n"
 			  << "  --level    Filter by log level \n"
 			  << "  --from     Start timestamp (inclusive) \n"
 			  << "  --to       End timestamp (inclusive) \n"
